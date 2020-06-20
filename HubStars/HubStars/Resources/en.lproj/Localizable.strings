@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  HubStars
+
+  Created by Debora Moura on 20/06/20.
+  Copyright © 2020 Debora Moura. All rights reserved.
+*/
+
+// General
+"General-RefreshTitle" = "Pull to refresh";
+"General-BackToTopTitle" = "Back to top";
+"General-TryAgain" = "Try again";
+"General-Cancel" = "Cancel";
+
+// Error alerts
+"ErrorNetwork-Title" = "Error";
+"ErrorNetwork-Message" = "An error occour when trying to connect to server.";
+
+// Repos List
+"ReposList-Title" = "Most starred";

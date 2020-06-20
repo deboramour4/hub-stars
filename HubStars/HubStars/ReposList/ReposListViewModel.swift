@@ -26,7 +26,7 @@ final class ReposListViewModel {
     public var successOnRequest: NotifyClosure = nil
     public var errorOnRequest: NotifyClosure = nil
     public var successOnRefresh: NotifyClosure = nil
-    public var titleText: String = "Most starred"
+    public var titleText: String = AppKeys.ReposList.title.localized
     public var numberOfSections: Int = 1
     public var numberOfRows: Int {
         return allRepos.count
@@ -66,7 +66,11 @@ final class ReposListViewModel {
         return cellViewModels[indexPath.row]
     }
     
+    // MARK: - View inputs
     public func viewDidPullToRefresh() {
+        requestRepos()
+    }
+    public func viewDidTapTryAgain() {
         requestRepos()
     }
 }

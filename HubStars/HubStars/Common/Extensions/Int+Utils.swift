@@ -14,7 +14,7 @@ extension Int {
         formatter.minimumIntegerDigits = 1
         formatter.maximumFractionDigits = 1
         formatter.numberStyle = .decimal
-        formatter.positiveSuffix = "k"
+        formatter.positiveSuffix = K.thousandIndicator
     
         let number = Double(self)
         let thousand = number / 1000

@@ -12,4 +12,7 @@ extension String {
     static var empty: String {
         ""
     }
+    var firstCapitalized: String {
+        return prefix(1).capitalized + dropFirst()
+    }
 }
