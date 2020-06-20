@@ -9,9 +9,10 @@
 import Foundation
 
 extension String {
-    static var empty: String {
-        ""
-    }
+    static var empty: String { "" }
+    
+    static var space: String { " " }
+    
     var firstCapitalized: String {
         return prefix(1).capitalized + dropFirst()
     }

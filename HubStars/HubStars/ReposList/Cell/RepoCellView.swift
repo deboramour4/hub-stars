@@ -24,32 +24,30 @@ final class RepoCellView: UITableViewCell {
     }
     
     // MARK: - UI Elements
-    private var detailImageView: UIImageView = {
-        let image = UIImageView(frame: .zero)
+    private var detailImageView: AppImageView = {
+        let image = AppImageView(isCircle: true)
         image.contentMode = .scaleAspectFill
-        image.layer.masksToBounds = true
-        image.layer.cornerRadius = Constants.image.size/2
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
-    private var titleLabel: UILabel = {
-        let label = UILabel(frame: .zero)
+    private var titleLabel: AppLabel = {
+        let label = AppLabel(frame: .zero)
         label.font = UIFont.h1
         label.textColor = UIColor.label
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private var usernameLabel: UILabel = {
-        let label = UILabel(frame: .zero)
+    private var usernameLabel: AppLabel = {
+        let label = AppLabel(frame: .zero)
         label.font = UIFont.h3
         label.textColor = UIColor.secondaryLabel
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private var starsLabel: UILabel = {
-        let label = UILabel(frame: .zero)
+    private var starsLabel: AppLabel = {
+        let label = AppLabel(frame: .zero)
         label.font = UIFont.h2
         label.textColor = UIColor.label
         label.textAlignment = .center
@@ -67,21 +65,15 @@ final class RepoCellView: UITableViewCell {
     
     override func prepareForReuse() {
         detailImageView.image = nil
+        titleLabel.isLoading = true
+        starsLabel.isLoading = true
+        usernameLabel.isLoading = true
     }
     
     // MARK: - Setup
     private func setupView() {
         accessoryType = .disclosureIndicator
-        
-        //way 1 and 2
-//        textStackView.addArrangedSubview(titleLabel)
-//        textStackView.addArrangedSubview(usernameLabel)
-//
-//        addSubview(detailImageView)
-//        addSubview(textStackView)
-//        addSubview(starsLabel)
-        
-        //way 3
+
         textStackView.addArrangedSubview(titleLabel)
         textStackView.addArrangedSubview(starsLabel)
         textStackView.addArrangedSubview(usernameLabel)
@@ -91,37 +83,6 @@ final class RepoCellView: UITableViewCell {
         starsLabel.textAlignment = .left
         
         NSLayoutConstraint.activate([
-            //way 1
-//            detailImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-//            detailImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.padding),
-//            detailImageView.heightAnchor.constraint(equalToConstant: Constants.image.size),
-//            detailImageView.widthAnchor.constraint(equalToConstant: Constants.image.size),
-//
-//            textStackView.leadingAnchor.constraint(equalTo: detailImageView.trailingAnchor, constant: Constants.padding),
-//            textStackView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.padding*2),
-//            textStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.padding*2),
-//
-//            starsLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-//            starsLabel.leadingAnchor.constraint(equalTo: textStackView.trailingAnchor, constant: Constants.padding),
-//            starsLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding),
-//            starsLabel.widthAnchor.constraint(equalToConstant: Constants.image.size),
-            
-            //way 2
-//            detailImageView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.padding),
-//            detailImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.padding),
-//            detailImageView.heightAnchor.constraint(equalToConstant: Constants.image.size),
-//            detailImageView.widthAnchor.constraint(equalToConstant: Constants.image.size),
-//
-//            textStackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-//            textStackView.leadingAnchor.constraint(equalTo: detailImageView.trailingAnchor, constant: Constants.padding*2),
-//            textStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.padding*2),
-//
-//            starsLabel.topAnchor.constraint(equalTo: detailImageView.bottomAnchor, constant: Constants.padding/2),
-//            starsLabel.leadingAnchor.constraint(equalTo: detailImageView.leadingAnchor),
-//            starsLabel.trailingAnchor.constraint(equalTo: detailImageView.trailingAnchor),
-//            starsLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.padding),
-            
-            //way 3
             detailImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             detailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.padding),
             detailImageView.heightAnchor.constraint(equalToConstant: Constants.image.size),
@@ -139,20 +100,9 @@ final class RepoCellView: UITableViewCell {
     
     public func setup(with viewModel: RepoCellViewModel?) {
         if let viewModel = viewModel {
-            titleLabel.backgroundColor = .clear
-            starsLabel.backgroundColor = .clear
-            usernameLabel.backgroundColor = .clear
-            detailImageView.backgroundColor = .clear
-            
             titleLabel.text = viewModel.repoTitleText
             starsLabel.text = viewModel.starsCountText
             usernameLabel.text = viewModel.usernameText
-            
-            viewModel.onRequest = { [weak self] isLoading in
-                DispatchQueue.main.async {
-                    self?.detailImageView.backgroundColor = isLoading ? .lightGray : .clear
-                }
-            }
             
             viewModel.successOnRequest = { [weak self] data in
                 DispatchQueue.main.async {
@@ -164,31 +114,13 @@ final class RepoCellView: UITableViewCell {
             
             viewModel.errorOnRequest = { [weak self] in
                 DispatchQueue.main.async {
-                    self?.detailImageView.backgroundColor = .red
+                    self?.detailImageView.image = UIImage(named: "placeholder")
                 }
             }
             
             viewModel.getImageData()
-        } else {
-            titleLabel.backgroundColor = .tertiarySystemFill
-            starsLabel.backgroundColor = .tertiarySystemFill
-            usernameLabel.backgroundColor = .tertiarySystemFill
-            detailImageView.backgroundColor = .tertiarySystemFill
-            
-            titleLabel.layer.masksToBounds = true
-            starsLabel.layer.masksToBounds = true
-            usernameLabel.layer.masksToBounds = true
-            
-            titleLabel.layer.cornerRadius = 8
-            starsLabel.layer.cornerRadius = 8
-            usernameLabel.layer.cornerRadius = 8
-            
-            titleLabel.text = " "
-            starsLabel.text = " "
-            usernameLabel.text = " "
         }
         
         setupView()
     }
-    
 }

@@ -12,19 +12,14 @@ import Foundation
 final class RepoCellViewModel {
     
     // MARK: - Properties
-    
     private let repo: Repo
     private let service: GitHubService
     
     // MARK: - Typealias
-    
-    typealias BooleanClosure = ((Bool) -> (Void))?
     typealias DataClosure = ((Data?) -> (Void))?
     typealias NotifyClosure = (() -> (Void))?
     
     // MARK: - Output
-    
-    public var onRequest: BooleanClosure = nil
     public var successOnRequest: DataClosure = nil
     public var errorOnRequest: NotifyClosure = nil
     
@@ -44,7 +39,6 @@ final class RepoCellViewModel {
        }
     
     // MARK: - Constructors
-    
     init(repo: Repo,
          service: GitHubService = GitHubService()) {
         self.repo = repo
@@ -52,19 +46,13 @@ final class RepoCellViewModel {
     }
     
     // MARK: - Internal functions
-    
     public func getImageData() {
         if let data = imageData {
             successOnRequest?(data)
             return
         }
-        
-        onRequest?(true)
 
         service.getImageData(of: repo) { [weak self] (result) in
-            
-            self?.onRequest?(false)
-
             switch result {
             case .success(let data):
                 self?.imageData = data

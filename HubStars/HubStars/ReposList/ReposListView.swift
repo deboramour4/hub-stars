@@ -38,17 +38,11 @@ final class ReposListView: UIView {
         tableView.tableFooterView = UIView()
         tableView.allowsSelection = true
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.showsVerticalScrollIndicator = false
         tableView.register(RepoCellView.self, forCellReuseIdentifier: Constants.tableView.identifier)
         return tableView
     }()
-
-    private var loadingView: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView()
-        view.startAnimating()
-        view.style = .large
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    
     private var refreshControl: UIRefreshControl = {
         let refresh = UIRefreshControl()
         refresh.attributedTitle = NSAttributedString(string: AppKeys.General.refreshTitle.localized,
@@ -64,36 +58,16 @@ final class ReposListView: UIView {
         tableView.refreshControl = refreshControl
         
         addSubview(reposTableView)
-        addSubview(loadingView)
 
         NSLayoutConstraint.activate([
             reposTableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             reposTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             reposTableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            reposTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            loadingView.topAnchor.constraint(equalTo: topAnchor),
-            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            loadingView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            reposTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     
-    public func setup(with viewModel: ReposListViewModel) {
-        viewModel.successOnRequest = { [weak self] in
-            DispatchQueue.main.async {
-                self?.reposTableView.reloadData()
-            }
-        }
-        
-        viewModel.onRequest = { [weak self] isLoading in
-            DispatchQueue.main.async {
-                self?.loadingView.isHidden = !isLoading
-                self?.reposTableView.isHidden = isLoading
-            }
-        }
-        
-        loadingView.isHidden = true
+    public func setup() {        
         setupView()
     }
     
