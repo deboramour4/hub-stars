@@ -43,16 +43,17 @@ final class ReposListViewController: UIViewController {
         reposListView.tableView.delegate = self
         reposListView.tableView.dataSource = self
         
-//        reposListViewModel.errorOnRequest = { [weak self] in
-//            DispatchQueue.main.async {
-//                self?.presentAlert(AppKeys.goalsListErrorAlertTitle.localized,
-//                                   message: AppKeys.goalsListErrorAlertMessage.localized,
-//                                   button: AppKeys.tryAgainButtonTitle.localized,
-//                                   handler: { _ in
-//                    self?.goalsViewModel.requestGoals()
-//                })
-//            }
-//        }
+        reposListViewModel.errorOnRequest = { [weak self] in
+            DispatchQueue.main.async {
+                self?.presentAlert(AppKeys.ErrorNetwork.title.localized,
+                                   message: AppKeys.ErrorNetwork.message.localized,
+                                   actionTitle: AppKeys.General.tryAgain.localized,
+                                   dismissTitle: AppKeys.General.cancel.localized,
+                                   handler: { _ in
+                    self?.reposListViewModel.viewDidTapTryAgain()
+                })
+            }
+        }
         reposListView.setup(with: reposListViewModel)
     }
     

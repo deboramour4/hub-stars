@@ -51,7 +51,8 @@ final class ReposListView: UIView {
     }()
     private var refreshControl: UIRefreshControl = {
         let refresh = UIRefreshControl()
-        refresh.attributedTitle = NSAttributedString(string: "Pull to refresh", attributes: [NSAttributedString.Key.font: UIFont.p2 as Any])
+        refresh.attributedTitle = NSAttributedString(string: AppKeys.General.refreshTitle.localized,
+                                                     attributes: [NSAttributedString.Key.font: UIFont.p2 as Any])
         return refresh
     }()
 
@@ -88,6 +89,7 @@ final class ReposListView: UIView {
         viewModel.onRequest = { [weak self] isLoading in
             DispatchQueue.main.async {
                 self?.loadingView.isHidden = !isLoading
+                self?.reposTableView.isHidden = isLoading
             }
         }
         

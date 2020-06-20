@@ -9,9 +9,10 @@
 import Foundation
 
 struct K {
+    static let thousandIndicator: String = "k"
+    
     struct APIServer {
         static let baseURL: String = "https://api.github.com"
-//        static let dateFormat: String = "yyyy-MM-dd"
     }
     
     struct APIParameterKey {

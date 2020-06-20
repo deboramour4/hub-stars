@@ -79,23 +79,19 @@ enum Service: ServiceProtocol {
         guard var urlComponents = URLComponents(string: url) else {
             return nil
         }
-        
         urlComponents.queryItems = parameters.map { key, value in
             return URLQueryItem(name: key, value: String(describing: value))
         }
-        
         guard let finalUrl = urlComponents.url else {
             return nil
         }
-
         var request = URLRequest(url: finalUrl)
-        
+        request.httpMethod = method.rawValue
         headers.forEach { (header) in
             header.value.forEach { (key, value) in
                 request.addValue(value, forHTTPHeaderField: key)
             }
         }
-        
         return request
     }
 }
