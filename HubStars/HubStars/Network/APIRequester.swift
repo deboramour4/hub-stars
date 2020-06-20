@@ -45,10 +45,25 @@ final class APIRequester: APIRequesterProtocol {
     // MARK: - Request error cases
     enum RequestError: Error {
         case invalidURL
-        case parseError
-        case requestError
-        case noJSONData
+        case emptyData
+        case parseError(description: String)
+        case rateLimitExceeded
         case unknown
+        
+        var localizedDescription: String {
+            switch self {
+            case .invalidURL:
+                return "The given URL is not valid."
+            case .emptyData:
+                return "No data available in HTTP response."
+            case .parseError(let description):
+                return "Could not parse the current JSON object.\nMore info: \(description)"
+            case .rateLimitExceeded:
+                return "API rate limit exceeded for current IP address.\nCheck out the documentation for more details."
+            case .unknown:
+                return "Failed for unknow reasons."
+            }
+        }
     }
     
     // MARK: - Constructors
@@ -76,9 +91,11 @@ final class APIRequester: APIRequesterProtocol {
                     do {
                         let model = try decoder.decode(T.self, from: data)
                         completion(.success(model))
-                    } catch {
-                        completion(.failure(RequestError.parseError))
+                    } catch let error {
+                        completion(.failure(RequestError.parseError(description: error.localizedDescription)))
                     }
+                case 403:
+                    completion(.failure(RequestError.rateLimitExceeded))
                 default:
                     completion(.failure(RequestError.unknown))
                 }

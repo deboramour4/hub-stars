@@ -22,7 +22,7 @@ protocol ServiceProtocol {
 enum Service: ServiceProtocol {
     
     // MARK: - Cases
-    case repos
+    case repos(perPage: Int, page: Int)
     case image(url: String)
     
     // MARK: - URL
@@ -66,9 +66,11 @@ enum Service: ServiceProtocol {
     // MARK: - Parameters
     var parameters: HTTPParameters {
         switch self {
-        case .repos:
-            return [K.APIParameterKey.query: "language:swift",
-                    K.APIParameterKey.sort: "stars"]
+        case .repos(let perPage, let page):
+            return [K.APIServer.ParameterKey.query: "language:swift",
+                    K.APIServer.ParameterKey.sort: "stars",
+                    K.APIServer.ParameterKey.page: page,
+                    K.APIServer.ParameterKey.perPage: perPage]
         case .image:
             return [:]
         }

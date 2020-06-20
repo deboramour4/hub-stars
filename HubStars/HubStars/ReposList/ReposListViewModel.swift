@@ -12,49 +12,64 @@ import Foundation
 final class ReposListViewModel {
 
     // MARK: - Properties
-    private var service: GitHubServiceProtocol
-    internal var allRepos: [Repo] = []
+    private let service: GitHubServiceProtocol
+    private var allRepos: [Repo] = []
     private var cellViewModels: [RepoCellViewModel] = []
+    private var currentPage: Int = 1
+    private let reposPerPage: Int = 30
+    private var isOnRequest: Bool
     
     // MARK: - Typealias
-    typealias BooleanClosure = ((Bool) -> (Void))?
     typealias NotifyClosure = (() -> (Void))?
-    
+    typealias IndexPathClosure = ((_ newIndexPathsToReload: [IndexPath]?) -> (Void))?
     
     // MARK: - Output
-    public var onRequest: BooleanClosure = nil
-    public var successOnRequest: NotifyClosure = nil
+    public var successOnRequest: IndexPathClosure = nil
     public var errorOnRequest: NotifyClosure = nil
-    public var successOnRefresh: NotifyClosure = nil
     public var titleText: String = AppKeys.ReposList.title.localized
+    public var numberOfRows: Int = 0
     public var numberOfSections: Int = 1
-    public var numberOfRows: Int {
+    public var currentCountOfRepos: Int {
         return allRepos.count
     }
     
     // MARK: - Constructors
     init(_ service: GitHubServiceProtocol = GitHubService()) {
         self.service = service
-        requestRepos()
+        isOnRequest = false
+        requestRepos(isRefresh: false)
     }
     
     // MARK: - Internal functions
-    private func requestRepos() {
-        onRequest?(true)
+    private func requestRepos(isRefresh: Bool) {
+        guard !isOnRequest else {
+          return
+        }
+        isOnRequest = true
         
-        service.getRepos { [weak self] (result) in
-            self?.onRequest?(false)
+        service.getRepos(perPage: reposPerPage, page: currentPage) { [weak self] (result) in
+            self?.isOnRequest = false
 
             switch result {
             case .success(let repos):
-                self?.allRepos = repos.all
-
-                self?.cellViewModels.removeAll()
-                for repo in repos.all {
-                    let cellViewModel = RepoCellViewModel(repo: repo)
-                    self?.cellViewModels.append(cellViewModel)
+                guard let currentPage = self?.currentPage else {
+                    return
                 }
-                self?.successOnRequest?()
+
+                if !isRefresh {
+                    self?.allRepos.append(contentsOf: repos.all)
+                    self?.createCellViewModels(repos.all)
+                    self?.currentPage += 1
+                }
+
+                if currentPage > 2 {
+                    let indexPathsToRefresh = self?.indexPathsToRefresh(from: repos.all)
+                    self?.successOnRequest?(indexPathsToRefresh)
+                } else {
+                    self?.numberOfRows = repos.totalCount
+                    self?.successOnRequest?(.none)
+                }
+
             case .failure(let error):
                 print(error.localizedDescription)
                 self?.errorOnRequest?()
@@ -62,15 +77,36 @@ final class ReposListViewModel {
         }
     }
     
-    public func getCellViewModel(for indexPath: IndexPath) -> RepoCellViewModel {
-        return cellViewModels[indexPath.row]
+    
+    private func indexPathsToRefresh(from newRepos: [Repo]) -> [IndexPath] {
+        let initialIndex = allRepos.count - newRepos.count
+        let finalIndex = initialIndex + newRepos.count
+        let indexPaths = (initialIndex..<finalIndex).map { IndexPath(row: $0, section: 0) }
+        return indexPaths
     }
     
-    // MARK: - View inputs
+    private func createCellViewModels(_ repos: [Repo]) {
+        for repo in repos {
+            let cellViewModel = RepoCellViewModel(repo: repo)
+            cellViewModels.append(cellViewModel)
+        }
+    }
+
+    
+    // MARK: - Public functions
+    public func getCellViewModel(for indexPath: IndexPath) -> RepoCellViewModel? {
+        if indexPath.row >= allRepos.count {
+            return nil
+        }
+        return cellViewModels[indexPath.row]
+    }
     public func viewDidPullToRefresh() {
-        requestRepos()
+        requestRepos(isRefresh: true)
     }
     public func viewDidTapTryAgain() {
-        requestRepos()
+        requestRepos(isRefresh: false)
+    }
+    public func viewDidShowAllRepos() {
+        requestRepos(isRefresh: false)
     }
 }

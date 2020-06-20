@@ -13,12 +13,14 @@ struct K {
     
     struct APIServer {
         static let baseURL: String = "https://api.github.com"
+        struct ParameterKey {
+            static let query: String = "q"
+            static let sort: String = "sort"
+            static let page: String = "page"
+            static let perPage: String = "per_page"
+        }
     }
     
-    struct APIParameterKey {
-        static let query: String = "q"
-        static let sort: String = "sort"
-    }
 }
 
 public enum HTTPHeadersFields: String {

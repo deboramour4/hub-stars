@@ -15,7 +15,7 @@ extension UIViewController {
         if let title = dismissTitle {
             alert.addAction(UIAlertAction(title: title, style: .cancel, handler: nil))
         }
-        alert.view.tintColor = UIColor.black
+        alert.view.tintColor = UIColor.label
         present(alert, animated: true, completion: nil)
     }
 }

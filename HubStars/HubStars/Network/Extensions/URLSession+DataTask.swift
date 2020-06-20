@@ -21,7 +21,7 @@ extension URLSession {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse, let data = data else {
-                result(.failure(APIRequester.RequestError.noJSONData))
+                result(.failure(APIRequester.RequestError.emptyData))
                 return
             }
             result(.success((httpResponse, data)))

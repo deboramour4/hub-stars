@@ -137,32 +137,56 @@ final class RepoCellView: UITableViewCell {
         starsLabel.setContentHuggingPriority(UILayoutPriority.defaultHigh, for:.vertical)
     }
     
-    public func setup(with viewModel: RepoCellViewModel) {
-        titleLabel.text = viewModel.repoTitleText
-        starsLabel.text = viewModel.starsCountText
-        usernameLabel.text = viewModel.usernameText
-        
-        viewModel.onRequest = { [weak self] isLoading in
-            DispatchQueue.main.async {
-                self?.detailImageView.backgroundColor = isLoading ? .lightGray : .clear
-            }
-        }
-        
-        viewModel.successOnRequest = { [weak self] data in
-            DispatchQueue.main.async {
-                if let data = data {
-                    self?.detailImageView.image = UIImage(data: data)
+    public func setup(with viewModel: RepoCellViewModel?) {
+        if let viewModel = viewModel {
+            titleLabel.backgroundColor = .clear
+            starsLabel.backgroundColor = .clear
+            usernameLabel.backgroundColor = .clear
+            detailImageView.backgroundColor = .clear
+            
+            titleLabel.text = viewModel.repoTitleText
+            starsLabel.text = viewModel.starsCountText
+            usernameLabel.text = viewModel.usernameText
+            
+            viewModel.onRequest = { [weak self] isLoading in
+                DispatchQueue.main.async {
+                    self?.detailImageView.backgroundColor = isLoading ? .lightGray : .clear
                 }
             }
-        }
-        
-        viewModel.errorOnRequest = { [weak self] in
-            DispatchQueue.main.async {
-                self?.detailImageView.backgroundColor = .red
+            
+            viewModel.successOnRequest = { [weak self] data in
+                DispatchQueue.main.async {
+                    if let data = data {
+                        self?.detailImageView.image = UIImage(data: data)
+                    }
+                }
             }
+            
+            viewModel.errorOnRequest = { [weak self] in
+                DispatchQueue.main.async {
+                    self?.detailImageView.backgroundColor = .red
+                }
+            }
+            
+            viewModel.getImageData()
+        } else {
+            titleLabel.backgroundColor = .tertiarySystemFill
+            starsLabel.backgroundColor = .tertiarySystemFill
+            usernameLabel.backgroundColor = .tertiarySystemFill
+            detailImageView.backgroundColor = .tertiarySystemFill
+            
+            titleLabel.layer.masksToBounds = true
+            starsLabel.layer.masksToBounds = true
+            usernameLabel.layer.masksToBounds = true
+            
+            titleLabel.layer.cornerRadius = 8
+            starsLabel.layer.cornerRadius = 8
+            usernameLabel.layer.cornerRadius = 8
+            
+            titleLabel.text = " "
+            starsLabel.text = " "
+            usernameLabel.text = " "
         }
-
-        viewModel.getImageData()
         
         setupView()
     }

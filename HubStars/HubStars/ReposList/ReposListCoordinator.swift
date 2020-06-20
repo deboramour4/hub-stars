@@ -15,7 +15,7 @@ final class ReposListCoordinator: Coordinator {
     // MARK: - Properties
     private let presenter: UINavigationController
     private var viewController: ReposListViewController?
-//    private var goalDetailsController: GoalDetailsViewController?
+    private var safariViewController: SFSafariViewController?
     
     // MARK: - Constructors
     init(presenter: UINavigationController) {
@@ -33,12 +33,9 @@ final class ReposListCoordinator: Coordinator {
 
 // MARK: - Extensions
 extension ReposListCoordinator: ReposListViewControllerDelegate {
-    func reposListViewControllerDidSelectRepo(_ viewController: ReposListViewController, _ viewModel: RepoCellViewModel) {
-//        let viewController = GoalDetailsViewController(viewModel: viewModel)
-//        self.navigationController?.pushViewController(viewController, animated: true)
-//        self.goalDetailsController = viewController
-        
-        if let url = URL(string: viewModel.repoUrlString) {
+    func reposListViewControllerDidSelectRepo(_ viewController: ReposListViewController, _ viewModel: RepoCellViewModel?) {
+        if let viewModel = viewModel,
+            let url = URL(string: viewModel.repoUrlString) {
             let config = SFSafariViewController.Configuration()
             config.entersReaderIfAvailable = true
 

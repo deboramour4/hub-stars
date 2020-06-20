@@ -13,7 +13,7 @@ protocol GitHubServiceProtocol {
     typealias ReposResult = (Result<Repos, APIRequester.RequestError>)
     typealias DataResult = (Result<Data, APIRequester.RequestError>)
     
-    func getRepos(_ completion: @escaping ((ReposResult) -> Void))
+    func getRepos(perPage: Int, page: Int, _ completion: @escaping ((ReposResult) -> Void))
     func getImageData(of repo: Repo, _ completion: @escaping ((DataResult) -> Void))
 }
 
@@ -30,8 +30,8 @@ final class GitHubService : GitHubServiceProtocol {
     }
     
     // MARK: - Internal functions
-    func getRepos(_ completion: @escaping ((ReposResult) -> Void)) {
-        requester.getJSON(service: Service.repos) { (result: ReposResult) in
+    func getRepos(perPage: Int, page: Int, _ completion: @escaping ((ReposResult) -> Void)) {
+        requester.getJSON(service: Service.repos(perPage: perPage, page: page)) { (result: ReposResult) in
             completion(result)
         }
     }
