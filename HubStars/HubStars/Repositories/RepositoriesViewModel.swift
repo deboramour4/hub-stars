@@ -17,7 +17,6 @@ protocol RepositoriesViewModelProtocol {
     var titleText: String { get }
     var numberOfRows: Int { get }
     var numberOfSections: Int { get }
-    var currentCountOfRepos: Int { get }
     func getCellViewModel(for indexPath: IndexPath) -> RepoCellViewModelProtocol?
     func viewDidPullToRefresh()
     func viewDidTapTryAgain()
@@ -39,9 +38,8 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
     public var successOnRequest: IndexPathClosure = nil
     public var errorOnRequest: NotifyClosure = nil
     public var titleText: String = AppKeys.Repositories.title.localized
-    public var numberOfRows: Int = 0
     public var numberOfSections: Int = 1
-    public var currentCountOfRepos: Int {
+    public var numberOfRows: Int {
         return allRepos.count
     }
     
@@ -80,11 +78,10 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
             currentPage += 1
         }
         
-        if currentPage > 2 {
+        if currentPage > 2 && !isRefresh {
             let indexPaths = indexPathsToRefresh(from: repos.all)
             successOnRequest?(indexPaths)
         } else {
-            numberOfRows = repos.totalCount
             successOnRequest?(.none)
         }
     }

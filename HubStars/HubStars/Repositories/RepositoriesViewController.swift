@@ -41,16 +41,13 @@ final class RepositoriesViewController: UIViewController {
         repositoriesView.delegate = self
         repositoriesView.tableView.delegate = self
         repositoriesView.tableView.dataSource = self
-        repositoriesView.tableView.prefetchDataSource = self
         
         repositoriesViewModel.successOnRequest = { [weak self] indexPaths in
             DispatchQueue.main.async {
-                guard let indexPathsToReload = indexPaths else {
+                if let indexPathsToReload = indexPaths {
+                    self?.repositoriesView.tableView.insertRows(at: indexPathsToReload, with: .fade)
+                } else {
                     self?.repositoriesView.tableView.reloadData()
-                    return
-                }
-                if let newIndexPathsToReload = self?.visibleIndexPathsToReload(intersecting: indexPathsToReload) {
-                    self?.repositoriesView.tableView.reloadRows(at: newIndexPathsToReload, with: .fade)
                 }
             }
         }
@@ -66,16 +63,6 @@ final class RepositoriesViewController: UIViewController {
             }
         }
         repositoriesView.setup()
-    }
-    
-    func cellNotLoaded(at indexPath: IndexPath) -> Bool {
-      return indexPath.row >= repositoriesViewModel.currentCountOfRepos
-    }
-
-    func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
-      let indexPathsForVisibleRows = repositoriesView.tableView.indexPathsForVisibleRows ?? []
-      let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
-      return Array(indexPathsIntersection)
     }
 }
 
@@ -111,12 +98,16 @@ extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate
         let viewModel = self.repositoriesViewModel.getCellViewModel(for: indexPath)
         delegate?.repositoriesViewControllerDidSelectRepo(self, viewModel)
     }
-}
-
-extension RepositoriesViewController: UITableViewDataSourcePrefetching {
-  func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-    if indexPaths.contains(where: cellNotLoaded) {
-      repositoriesViewModel.viewDidShowAllRepos()
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row + 1 == repositoriesViewModel.numberOfRows {
+            let emptyCell = RepoCellView(frame: cell.frame)
+            emptyCell.setup(with: nil)
+            emptyCell.frame.size = cell.frame.size
+            
+            tableView.tableFooterView = emptyCell
+            repositoriesViewModel.viewDidShowAllRepos()
+        }
+        
     }
-  }
 }

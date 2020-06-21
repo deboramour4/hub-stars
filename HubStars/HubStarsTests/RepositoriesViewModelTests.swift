@@ -38,11 +38,7 @@ class RepositoriesViewModelTests: QuickSpec {
             }
             
             it("has correct numberOfRows") {
-                expect(self.sut.numberOfRows).to(equal(10))
-            }
-                    
-            it("has correct countOfRepos") {
-                expect(self.sut.currentCountOfRepos).to(equal(2))
+                expect(self.sut.numberOfRows).to(equal(2))
             }
             
             it("returns correct getCellViewModel") {
@@ -54,21 +50,21 @@ class RepositoriesViewModelTests: QuickSpec {
             }
             it("updates repos correctly") {
                 self.sut.viewDidShowAllRepos()
-                expect(self.sut.currentCountOfRepos).to(equal(4))
+                expect(self.sut.numberOfRows).to(equal(4))
                 
                 var vm = self.sut.getCellViewModel(for: IndexPath(row: 3, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 2"))
                 
                 self.sut.viewDidTapTryAgain()
                 self.sut.viewDidTapTryAgain()
-                expect(self.sut.currentCountOfRepos).to(equal(8))
+                expect(self.sut.numberOfRows).to(equal(8))
                 
                 vm = self.sut.getCellViewModel(for: IndexPath(row: 4, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 1"))
             }
             it("refreshes repos correctly") {
                 self.sut.viewDidPullToRefresh()
-                expect(self.sut.currentCountOfRepos).to(equal(2))
+                expect(self.sut.numberOfRows).to(equal(2))
                 
                 let vm = self.sut.getCellViewModel(for: IndexPath(row: 0, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 1"))
@@ -76,7 +72,7 @@ class RepositoriesViewModelTests: QuickSpec {
             it("returns correct indexpaths") {
                 self.sut.successOnRequest = { indexpaths in
                     expect(indexpaths).notTo(beNil())
-                    expect(self.sut.currentCountOfRepos).to(equal(2))
+                    expect(self.sut.numberOfRows).to(equal(2))
                }
             }
         }
