@@ -9,35 +9,10 @@
 import Foundation
 
 // MARK: - APIRequesterProtocol
-
 protocol APIRequesterProtocol {
-    func getJSON<T: Decodable>(service: Service, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void))
-    func getData(service: Service, completion: @escaping ((Result<Data, APIRequester.RequestError>) -> Void))
+    func getJSON<T: Decodable>(endpoint: Endpoint, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void))
+    func getData(endpoint: Endpoint, completion: @escaping ((Result<Data, APIRequester.RequestError>) -> Void))
 }
-
-// MARK: - HTTP headers
-
-public typealias HTTPParameters = [String: Any]
-
-public enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case put = "PUT"
-    case patch = "PATCH"
-    case delete = "DELETE"
-}
-
-enum HTTPHeader {
-    case contentType
-    
-    var value: [String : String] {
-        switch self {
-        case .contentType:
-            return ["Content-type": "application/json"]
-        }
-    }
-}
-
 
 // MARK: - APIRequesterProtocol
 final class APIRequester: APIRequesterProtocol {
@@ -71,9 +46,9 @@ final class APIRequester: APIRequesterProtocol {
     
     // MARK: - HTTP Methods
     
-    func getJSON<T: Decodable>(service: Service, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void)) {
+    func getJSON<T: Decodable>(endpoint: Endpoint, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void)) {
         
-        guard let request = service.asRequest() else {
+        guard let request = endpoint.asRequest else {
             completion(.failure(RequestError.invalidURL))
             return
         }
@@ -103,9 +78,9 @@ final class APIRequester: APIRequesterProtocol {
         }.resume()
     }
     
-    func getData(service: Service, completion: @escaping ((Result<Data, APIRequester.RequestError>) -> Void)) {
+    func getData(endpoint: Endpoint, completion: @escaping ((Result<Data, APIRequester.RequestError>) -> Void)) {
         
-        guard let request = service.asRequest() else {
+        guard let request = endpoint.asRequest else {
             completion(.failure(RequestError.invalidURL))
             return
         }

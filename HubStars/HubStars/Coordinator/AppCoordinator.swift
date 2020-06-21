@@ -14,19 +14,19 @@ final class AppCoordinator: Coordinator {
     // MARK: - Properties
     private let window: UIWindow
     private let rootViewController: UINavigationController
-    private let reposListCoordinator: ReposListCoordinator
+    private let repositoriesCoordinator: RepositoriesCoordinator
 
     // MARK: - Constructors
     init(window: UIWindow) {
         self.window = window
         rootViewController = UINavigationController()
-        reposListCoordinator = ReposListCoordinator(presenter: rootViewController)
+        repositoriesCoordinator = RepositoriesCoordinator(presenter: rootViewController)
     }
     
     // MARK: - Internal functions
     func start() {
         window.rootViewController = rootViewController
-        reposListCoordinator.start()
+        repositoriesCoordinator.start()
         window.makeKeyAndVisible()
     }
 }

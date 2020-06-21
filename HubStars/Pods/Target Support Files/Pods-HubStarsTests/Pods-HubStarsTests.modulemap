@@ -1,0 +1,6 @@
+framework module Pods_HubStarsTests {
+  umbrella header "Pods-HubStarsTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

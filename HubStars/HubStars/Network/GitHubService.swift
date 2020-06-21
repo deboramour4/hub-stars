@@ -31,7 +31,7 @@ final class GitHubService : GitHubServiceProtocol {
     
     // MARK: - Internal functions
     func getRepos(perPage: Int, page: Int, _ completion: @escaping ((ReposResult) -> Void)) {
-        requester.getJSON(service: Service.repos(perPage: perPage, page: page)) { (result: ReposResult) in
+        requester.getJSON(endpoint: Endpoint.repos(perPage: perPage, page: page)) { (result: ReposResult) in
             completion(result)
         }
     }
@@ -39,7 +39,7 @@ final class GitHubService : GitHubServiceProtocol {
     func getImageData(of repo: Repo, _ completion: @escaping ((DataResult) -> Void)) {
         let avatarUrl = repo.owner.avatarURL
         
-        requester.getData(service: Service.image(url: avatarUrl)) { (result: DataResult) in
+        requester.getData(endpoint: Endpoint.image(url: avatarUrl)) { (result: DataResult) in
             completion(result)
         }
     }

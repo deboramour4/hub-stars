@@ -28,11 +28,11 @@ struct AppKeys {
             String(describing: ErrorNetwork.self)
         }
     }
-    enum ReposList: String, LocalizableKeys {
+    enum Repositories: String, LocalizableKeys {
         case title
         
         var prefix: String {
-            String(describing: ReposList.self)
+            String(describing: Repositories.self)
         }
     }
 }

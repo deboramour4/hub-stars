@@ -17,4 +17,4 @@
 "ErrorNetwork-Message" = "An error occour when trying to connect to server.";
 
 // Repos List
-"ReposList-Title" = "Most starred";
+"Repositories-Title" = "Most starred";
