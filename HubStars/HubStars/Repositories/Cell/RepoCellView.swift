@@ -18,9 +18,6 @@ final class RepoCellView: UITableViewCell {
         struct image {
             static let size: CGFloat = 80
         }
-        struct stars {
-            static let size: CGFloat = 40
-        }
     }
     
     // MARK: - UI Elements

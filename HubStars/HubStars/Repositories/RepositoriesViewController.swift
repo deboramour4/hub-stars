@@ -62,12 +62,16 @@ final class RepositoriesViewController: UIViewController {
                 })
             }
         }
-        repositoriesView.setup()
+        repositoriesView.setup(with: repositoriesViewModel)
     }
 }
 
 // MARK: - Extensions
 extension RepositoriesViewController: RepositoriesViewDelegate {
+    func repositoriesViewDidTapBackToTop(_ view: RepositoriesView) {
+        repositoriesView.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+    }
+    
     func repositoriesViewDidPullToRefresh(_ view: RepositoriesView) {
         repositoriesViewModel.viewDidPullToRefresh()
     }
@@ -100,14 +104,15 @@ extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row + 1 == repositoriesViewModel.numberOfRows {
+        repositoriesViewModel.viewWillDisplayCell(at: indexPath)
+        
+        if repositoriesViewModel.isEndOfList(indexPath) {
             let emptyCell = RepoCellView(frame: cell.frame)
             emptyCell.setup(with: nil)
             emptyCell.frame.size = cell.frame.size
             
             tableView.tableFooterView = emptyCell
-            repositoriesViewModel.viewDidShowAllRepos()
         }
-        
     }
+    
 }

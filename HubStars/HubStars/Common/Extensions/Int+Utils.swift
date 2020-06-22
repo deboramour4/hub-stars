@@ -14,6 +14,7 @@ extension Int {
         formatter.minimumIntegerDigits = 1
         formatter.maximumFractionDigits = 1
         formatter.numberStyle = .decimal
+        formatter.decimalSeparator = .point
         formatter.positiveSuffix = K.thousandIndicator
     
         let number = Double(self)

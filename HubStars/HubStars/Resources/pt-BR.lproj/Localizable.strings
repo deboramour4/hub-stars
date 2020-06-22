@@ -7,8 +7,6 @@
 */
 
 // General
-"General-RefreshTitle" = "Solte para recarregar";
-"General-BackToTopTitle" = "Voltar ao início";
 "General-TryAgain" = "Tentar novamente";
 "General-Cancel" = "Cancelar";
 
@@ -18,3 +16,4 @@
 
 // Repos List
 "Repositories-Title" = "Mais favoritados";
+"Repositories-TopButton" = "Voltar ao topo";

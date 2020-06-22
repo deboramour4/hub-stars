@@ -10,8 +10,8 @@ import Foundation
 
 extension String {
     static var empty: String { "" }
-    
     static var space: String { " " }
+    static var point: String { "." }
     
     var firstCapitalized: String {
         return prefix(1).capitalized + dropFirst()

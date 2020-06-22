@@ -48,16 +48,21 @@ class RepositoriesViewModelTests: QuickSpec {
                 expect(vm?.starsCountText).to(equal("★ 12.3k"))
                 expect(vm?.repoUrlString).to(equal(""))
             }
-            it("updates repos correctly") {
-                self.sut.viewDidShowAllRepos()
+            it("calculates didViewReachTheBottom correctly") {
+                var isAtEnd = self.sut.isEndOfList(IndexPath(row: 0, section: 0))
+                expect(isAtEnd).to(equal(false))
+                    
+                isAtEnd = self.sut.isEndOfList(IndexPath(row: 1, section: 0))
+                expect(isAtEnd).to(equal(true))
                 expect(self.sut.numberOfRows).to(equal(4))
-                
-                var vm = self.sut.getCellViewModel(for: IndexPath(row: 3, section: 0))
+            }
+            it("updates cells correctly") {
+                var vm = self.sut.getCellViewModel(for: IndexPath(row: 1, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 2"))
                 
                 self.sut.viewDidTapTryAgain()
                 self.sut.viewDidTapTryAgain()
-                expect(self.sut.numberOfRows).to(equal(8))
+                expect(self.sut.numberOfRows).to(equal(6))
                 
                 vm = self.sut.getCellViewModel(for: IndexPath(row: 4, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 1"))
@@ -74,6 +79,12 @@ class RepositoriesViewModelTests: QuickSpec {
                     expect(indexpaths).notTo(beNil())
                     expect(self.sut.numberOfRows).to(equal(2))
                }
+            }
+            it("calculates isListOnTop correctly") {
+                self.sut.topButtonIsHidden = { isOnTop in
+                    expect(isOnTop).to(equal(true))
+                }
+                self.sut.viewWillDisplayCell(at: IndexPath(row: 5, section: 0))
             }
         }
     }

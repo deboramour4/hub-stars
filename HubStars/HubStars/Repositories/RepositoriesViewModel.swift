@@ -11,16 +11,20 @@ import Foundation
 // MARK: - RepositoriesViewModelProtocol
 protocol RepositoriesViewModelProtocol {
     typealias NotifyClosure = (() -> (Void))?
+    typealias BoolClosure = ((Bool) -> (Void))?
     typealias IndexPathClosure = (([IndexPath]?) -> (Void))?
     var successOnRequest: IndexPathClosure { get set }
     var errorOnRequest: NotifyClosure { get set }
+    var topButtonIsHidden: BoolClosure { get set }
+    var topButtonTitle: String { get }
     var titleText: String { get }
     var numberOfRows: Int { get }
     var numberOfSections: Int { get }
     func getCellViewModel(for indexPath: IndexPath) -> RepoCellViewModelProtocol?
     func viewDidPullToRefresh()
     func viewDidTapTryAgain()
-    func viewDidShowAllRepos()
+    func viewWillDisplayCell(at indexPath: IndexPath)
+    func isEndOfList(_ indexPath: IndexPath) -> Bool
 }
 
 // MARK: - RepositoriesViewModel
@@ -33,14 +37,19 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
     private var currentPage: Int = 1
     private let reposPerPage: Int = 30
     private var isOnRequest: Bool
+    private var isListOnTop: Bool = true
     
     // MARK: - Output
     public var successOnRequest: IndexPathClosure = nil
     public var errorOnRequest: NotifyClosure = nil
+    public var topButtonIsHidden: BoolClosure = nil
     public var titleText: String = AppKeys.Repositories.title.localized
     public var numberOfSections: Int = 1
+    public var topButtonTitle: String {
+        "↑ \(AppKeys.Repositories.topButton.localized)"
+    }
     public var numberOfRows: Int {
-        return allRepos.count
+        allRepos.count
     }
     
     // MARK: - Constructors
@@ -113,7 +122,24 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
     public func viewDidTapTryAgain() {
         requestRepos(isRefresh: false)
     }
-    public func viewDidShowAllRepos() {
-        requestRepos(isRefresh: false)
+    public func viewWillDisplayCell(at indexPath: IndexPath) {
+        if indexPath.row > reposPerPage {
+            if isListOnTop {
+                topButtonIsHidden?(false)
+                isListOnTop = false
+            }
+        } else {
+            if !isListOnTop {
+                topButtonIsHidden?(true)
+                isListOnTop = true
+            }
+        }
+    }
+    public func isEndOfList(_ indexPath: IndexPath) -> Bool {
+        if indexPath.row + 1 == allRepos.count {
+            requestRepos(isRefresh: false)
+            return true
+        }
+        return false
     }
 }

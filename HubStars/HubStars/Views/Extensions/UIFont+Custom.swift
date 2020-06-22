@@ -17,6 +17,6 @@ extension UIFont {
     static let p2 = UIFont(name: "Montserrat-Regular", size: 15)
     static let navBarLargeTitle = UIFont(name: "Montserrat-ExtraBold", size: 34)
     static let navbarTitle = UIFont(name: "Montserrat-ExtraBold", size: 22)
-    static let button = UIFont(name: "Montserrat-SemiBold", size: 20)
+    static let button = UIFont(name: "Montserrat-SemiBold", size: 17)
 }
     

@@ -10,8 +10,6 @@ import Foundation
 
 struct AppKeys {
     enum General: String, LocalizableKeys {
-        case refreshTitle
-        case backToTopTitle
         case tryAgain
         case cancel
         
@@ -30,6 +28,7 @@ struct AppKeys {
     }
     enum Repositories: String, LocalizableKeys {
         case title
+        case topButton
         
         var prefix: String {
             String(describing: Repositories.self)
