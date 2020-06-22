@@ -51,8 +51,6 @@ final class RepositoriesView: UIView {
     
     private var backToTopButton: AppButton = {
         let button = AppButton(type: .custom)
-        button.hasBlur = true
-        button.alpha = Constants.alpha.hide
         button.addTarget(self, action: #selector(didTapBackToTop), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -69,18 +67,9 @@ final class RepositoriesView: UIView {
     }
     
     // MARK: - Private Functions
-    private func changeBackToTopButtonAlpha(to value: CGFloat) {
-        UIView.animate(withDuration: 0.5,
-                       delay: 0,
-                       options: .curveEaseIn,
-                       animations: { [weak self] in
-                        self?.backToTopButton.alpha = value
-        })
-    }
-    
     @objc private func didTapBackToTop() {
         delegate?.repositoriesViewDidTapBackToTop(self)
-        changeBackToTopButtonAlpha(to: Constants.alpha.hide)
+        topButton(isHidden: true)
     }
     
     @objc private func refreshAction(refreshControl: UIRefreshControl) {
@@ -111,15 +100,20 @@ final class RepositoriesView: UIView {
     }
     
     public func setup(with viewModel: RepositoriesViewModelProtocol?) {
-        if var viewModel = viewModel {
+        if let viewModel = viewModel {
             backToTopButton.title = viewModel.topButtonTitle
-            
-            viewModel.topButtonIsHidden = { [weak self] isListOnTop in
-                let alpha = isListOnTop ? Constants.alpha.hide : Constants.alpha.show
-                self?.changeBackToTopButtonAlpha(to: alpha)
-            }
+            backToTopButton.alpha = viewModel.topButtonIsHiddenInitialValue ? Constants.alpha.hide : Constants.alpha.show
         }
-        
         setupView()
+    }
+    
+    // MARK: - Internal Functions
+    func topButton(isHidden: Bool) {
+        UIView.animate(withDuration: 0.3,
+                       delay: 0,
+                       options: .curveEaseIn,
+                       animations: { [weak self] in
+                        self?.backToTopButton.alpha = isHidden ? Constants.alpha.hide : Constants.alpha.show
+        })
     }
 }

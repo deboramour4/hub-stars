@@ -74,18 +74,6 @@ class RepositoriesViewModelTests: QuickSpec {
                 let vm = self.sut.getCellViewModel(for: IndexPath(row: 0, section: 0))
                 expect(vm?.repoTitleText).to(equal("Repo 1"))
             }
-            it("returns correct indexpaths") {
-                self.sut.successOnRequest = { indexpaths in
-                    expect(indexpaths).notTo(beNil())
-                    expect(self.sut.numberOfRows).to(equal(2))
-               }
-            }
-            it("calculates isListOnTop correctly") {
-                self.sut.topButtonIsHidden = { isOnTop in
-                    expect(isOnTop).to(equal(true))
-                }
-                self.sut.viewWillDisplayCell(at: IndexPath(row: 5, section: 0))
-            }
         }
     }
 }

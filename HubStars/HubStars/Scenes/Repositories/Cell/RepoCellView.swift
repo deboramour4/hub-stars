@@ -95,25 +95,28 @@ final class RepoCellView: UITableViewCell {
     }
     
     public func setup(with viewModel: RepoCellViewModelProtocol?) {
-        if var viewModel = viewModel {
+        if let viewModel = viewModel {
             titleLabel.text = viewModel.repoTitleText
             starsLabel.text = viewModel.starsCountText
             usernameLabel.text = viewModel.usernameText
             
-            viewModel.successOnRequest = { [weak self] data in
-                DispatchQueue.main.async {
-                    if let data = data {
-                        self?.detailImageView.image = UIImage(data: data)
-                    }
-                }
-            }
-            viewModel.errorOnRequest = { [weak self] in
-                DispatchQueue.main.async {
-                    self?.detailImageView.image = UIImage(named: "placeholder")
-                }
-            }
             viewModel.getImageData()
         }
         setupView()
+    }
+}
+
+// MARK: - RepoCellView implements ViewModel Delegate
+extension RepoCellView: RepoCellViewModelDelegate {
+    func successOnRequest(_ imageData: Data) {
+        DispatchQueue.main.async { [weak self] in
+            self?.detailImageView.image = UIImage(data: imageData)
+        }
+    }
+    
+    func errorOnRequest() {
+        DispatchQueue.main.async { [weak self] in
+            self?.detailImageView.setDefaultImage()
+        }
     }
 }

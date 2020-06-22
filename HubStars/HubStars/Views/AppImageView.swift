@@ -60,4 +60,9 @@ class AppImageView: UIImageView {
     private func customizeNormal() {
         backgroundColor = .clear
     }
+    
+    // MARK: - Internal Functions
+    func setDefaultImage() {
+        image = UIImage.placeholder
+    }
 }

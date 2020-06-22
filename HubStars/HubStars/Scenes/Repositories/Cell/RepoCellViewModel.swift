@@ -10,10 +10,7 @@ import Foundation
 
 // MARK: - RepoCellViewModelProtocol
 protocol RepoCellViewModelProtocol {
-    typealias DataClosure = ((Data?) -> Void)?
-    typealias NotifyClosure = (() -> Void)?
-    var successOnRequest: DataClosure { get set }
-    var errorOnRequest: NotifyClosure { get set }
+    var delegate: RepoCellViewModelDelegate? { get set }
     var imageData: Data? { get }
     var usernameText: String { get }
     var repoTitleText: String { get }
@@ -22,17 +19,21 @@ protocol RepoCellViewModelProtocol {
     func getImageData()
 }
 
+// MARK: - RepoCellViewModelDelegate
+protocol RepoCellViewModelDelegate: class {
+    func successOnRequest(_ imageData: Data)
+    func errorOnRequest()
+}
+    
 // MARK: - RepoCellViewModel
 final class RepoCellViewModel: RepoCellViewModelProtocol {
     
     // MARK: - Properties
     private let repo: Repo
     private let service: GitHubServiceProtocol
+    weak var delegate: RepoCellViewModelDelegate?
         
-    // MARK: - Output
-    public var successOnRequest: DataClosure = nil
-    public var errorOnRequest: NotifyClosure = nil
-    
+    // MARK: - Output    
     public var imageData: Data?
 
     public var usernameText: String {
@@ -58,7 +59,7 @@ final class RepoCellViewModel: RepoCellViewModelProtocol {
     // MARK: - Public functions
     public func getImageData() {
         if let data = imageData {
-            successOnRequest?(data)
+            delegate?.successOnRequest(data)
             return
         }
 
@@ -66,10 +67,10 @@ final class RepoCellViewModel: RepoCellViewModelProtocol {
             switch result {
             case .success(let data):
                 self?.imageData = data
-                self?.successOnRequest?(data)
+                self?.delegate?.successOnRequest(data)
             case .failure(let error):
                 print(error.localizedDescription)
-                self?.errorOnRequest?()
+                self?.delegate?.errorOnRequest()
             }
         }
     }

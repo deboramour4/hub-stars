@@ -16,13 +16,6 @@ class AppButton: UIButton {
         static let height: CGFloat = 50
     }
     
-    // MARK: - UI Elements
-    private var blurView: UIVisualEffectView = {
-        let blur = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffect.Style.systemThinMaterial))
-        blur.isUserInteractionEnabled = false
-        return blur
-    }()
-    
     // MARK: - Properties
     var title: String? {
         didSet {
@@ -30,22 +23,6 @@ class AppButton: UIButton {
         }
     }
     
-    var hasBlur: Bool = false {
-        didSet {
-            if hasBlur {
-                insertSubview(blurView, at: 0)
-            }
-        }
-    }
-    
-    override var frame: CGRect {
-        didSet {
-            if hasBlur {
-                blurView.frame = bounds
-            }
-        }
-    }
-
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,6 +40,10 @@ class AppButton: UIButton {
         layer.cornerRadius = Constants.height/2
         titleLabel?.font = UIFont.button
         
-        heightAnchor.constraint(equalToConstant: Constants.height).isActive = true
+        backgroundColor = UIColor.primary(alpha: 0.9)
+
+        NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: Constants.height)
+        ])
     }
 }

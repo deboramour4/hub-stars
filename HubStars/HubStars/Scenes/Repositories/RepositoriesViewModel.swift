@@ -10,12 +10,8 @@ import Foundation
 
 // MARK: - RepositoriesViewModelProtocol
 protocol RepositoriesViewModelProtocol {
-    typealias NotifyClosure = (() -> Void)?
-    typealias BoolClosure = ((Bool) -> Void)?
-    typealias IndexPathClosure = (([IndexPath]?) -> Void)?
-    var successOnRequest: IndexPathClosure { get set }
-    var errorOnRequest: NotifyClosure { get set }
-    var topButtonIsHidden: BoolClosure { get set }
+    var delegate: RepositoriesViewModelDelegate? { get set }
+    var topButtonIsHiddenInitialValue: Bool { get }
     var topButtonTitle: String { get }
     var titleText: String { get }
     var numberOfRows: Int { get }
@@ -27,6 +23,13 @@ protocol RepositoriesViewModelProtocol {
     func isEndOfList(_ indexPath: IndexPath) -> Bool
 }
 
+// MARK: - RepositoriesViewModelDelegate
+protocol RepositoriesViewModelDelegate: class {
+    func successOnRequest(_ updateIndexPaths: [IndexPath]?)
+    func topButtonIsHidden(_ isHidden: Bool)
+    func errorOnRequest()
+}
+    
 // MARK: - RepositoriesViewModel
 final class RepositoriesViewModel: RepositoriesViewModelProtocol {
 
@@ -38,11 +41,10 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
     private let reposPerPage: Int = 30
     private var isOnRequest: Bool
     private var isListOnTop: Bool = true
+    weak var delegate: RepositoriesViewModelDelegate?
     
     // MARK: - Output
-    public var successOnRequest: IndexPathClosure = nil
-    public var errorOnRequest: NotifyClosure = nil
-    public var topButtonIsHidden: BoolClosure = nil
+    public var topButtonIsHiddenInitialValue: Bool = true
     public var titleText: String = AppKeys.Repositories.title.localized
     public var numberOfSections: Int = 1
     public var topButtonTitle: String {
@@ -75,7 +77,7 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
 
             case .failure(let error):
                 print(error.localizedDescription)
-                self?.errorOnRequest?()
+                self?.delegate?.errorOnRequest()
             }
         }
     }
@@ -89,9 +91,9 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
         
         if currentPage > 2 && !isRefresh {
             let indexPaths = indexPathsToRefresh(from: repositories.all)
-            successOnRequest?(indexPaths)
+            delegate?.successOnRequest(indexPaths)
         } else {
-            successOnRequest?(.none)
+            delegate?.successOnRequest(.none)
         }
     }
     
@@ -128,18 +130,21 @@ final class RepositoriesViewModel: RepositoriesViewModelProtocol {
     public func viewWillDisplayCell(at indexPath: IndexPath) {
         if indexPath.row > reposPerPage {
             if isListOnTop {
-                topButtonIsHidden?(false)
+                delegate?.topButtonIsHidden(false)
                 isListOnTop = false
             }
         } else {
             if !isListOnTop {
-                topButtonIsHidden?(true)
+                delegate?.topButtonIsHidden(true)
                 isListOnTop = true
             }
         }
     }
 
     public func isEndOfList(_ indexPath: IndexPath) -> Bool {
+        if allRepos.isEmpty {
+            return true
+        }
         if indexPath.row + 1 == allRepos.count {
             requestRepos(isRefresh: false)
             return true

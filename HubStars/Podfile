@@ -13,10 +13,7 @@ target 'HubStars' do
     # Pods for testing
     pod 'Quick'
     pod 'Nimble'
+    pod 'iOSSnapshotTestCase'
   end
-
-  target 'HubStarsUITests' do
-    # Pods for testing
-  end
-
+  
 end

@@ -17,9 +17,20 @@ protocol RepositoriesViewControllerDelegate: class {
 final class RepositoriesViewController: UIViewController {
     
     // MARK: - Properties
-    private let repositoriesView = RepositoriesView()
-    private var repositoriesViewModel: RepositoriesViewModelProtocol = RepositoriesViewModel()
+    let repositoriesView = RepositoriesView()
+    var repositoriesViewModel: RepositoriesViewModelProtocol
     weak var delegate: RepositoriesViewControllerDelegate?
+    
+    // MARK: - Initializers
+    init(viewModel: RepositoriesViewModelProtocol = RepositoriesViewModel()) {
+        self.repositoriesViewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        repositoriesViewModel.delegate = self
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - LifeCycle
     override func viewDidLoad() {
@@ -42,31 +53,11 @@ final class RepositoriesViewController: UIViewController {
         repositoriesView.tableView.delegate = self
         repositoriesView.tableView.dataSource = self
         
-        repositoriesViewModel.successOnRequest = { [weak self] indexPaths in
-            DispatchQueue.main.async {
-                if let indexPathsToReload = indexPaths {
-                    self?.repositoriesView.tableView.insertRows(at: indexPathsToReload, with: .fade)
-                } else {
-                    self?.repositoriesView.tableView.reloadData()
-                }
-            }
-        }
-        repositoriesViewModel.errorOnRequest = { [weak self] in
-            DispatchQueue.main.async {
-                self?.presentAlert(AppKeys.ErrorNetwork.title.localized,
-                                   message: AppKeys.ErrorNetwork.message.localized,
-                                   actionTitle: AppKeys.General.tryAgain.localized,
-                                   dismissTitle: AppKeys.General.cancel.localized,
-                                   handler: { _ in
-                    self?.repositoriesViewModel.viewDidTapTryAgain()
-                })
-            }
-        }
         repositoriesView.setup(with: repositoriesViewModel)
     }
 }
 
-// MARK: - Implements RepositoriesViewDelegate
+// MARK: - Implements View Delegate
 extension RepositoriesViewController: RepositoriesViewDelegate {
     func repositoriesViewDidTapBackToTop(_ view: RepositoriesView) {
         repositoriesView.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
@@ -77,6 +68,37 @@ extension RepositoriesViewController: RepositoriesViewDelegate {
     }
 }
 
+// MARK: - Implements ViewModel Delegate
+extension RepositoriesViewController: RepositoriesViewModelDelegate {
+    func successOnRequest(_ updateIndexPaths: [IndexPath]?) {
+        DispatchQueue.main.async { [weak self] in
+            if let indexPaths = updateIndexPaths {
+                self?.repositoriesView.tableView.insertRows(at: indexPaths, with: .fade)
+            } else {
+                self?.repositoriesView.tableView.reloadData()
+            }
+        }
+    }
+    
+    func topButtonIsHidden(_ isHidden: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.repositoriesView.topButton(isHidden: isHidden)
+        }
+    }
+    
+    func errorOnRequest() {
+        DispatchQueue.main.async { [weak self] in
+            self?.presentAlert(AppKeys.ErrorNetwork.title.localized,
+                               message: AppKeys.ErrorNetwork.message.localized,
+                               actionTitle: AppKeys.General.tryAgain.localized,
+                               dismissTitle: AppKeys.General.cancel.localized,
+                               handler: { _ in
+                                self?.repositoriesViewModel.viewDidTapTryAgain()
+            })
+        }
+    }
+}
+
 // MARK: - Implements UITableViewDataSource and UITableViewDelegate
 extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -84,6 +106,9 @@ extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if repositoriesViewModel.numberOfRows == 0 {
+            return 1
+        }
         return repositoriesViewModel.numberOfRows
     }
 
@@ -94,7 +119,9 @@ extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate
             return UITableViewCell()
         }
         
-        cell.setup(with: repositoriesViewModel.getCellViewModel(for: indexPath))
+        var viewModel = repositoriesViewModel.getCellViewModel(for: indexPath)
+        viewModel?.delegate = cell
+        cell.setup(with: viewModel)
         
         return cell
     }
@@ -108,7 +135,7 @@ extension RepositoriesViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         repositoriesViewModel.viewWillDisplayCell(at: indexPath)
         
-        if repositoriesViewModel.isEndOfList(indexPath) {
+        if repositoriesViewModel.isEndOfList(indexPath) && repositoriesViewModel.numberOfRows > 0 {
             let emptyCell = RepoCellView(frame: cell.frame)
             emptyCell.setup(with: nil)
             emptyCell.frame.size = cell.frame.size

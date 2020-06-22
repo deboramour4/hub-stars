@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import UIKit
 @testable import HubStars
 
-final class GitHubServiceMock: GitHubServiceProtocol {
+final public class GitHubServiceMock: GitHubServiceProtocol {
     
-    func getRepos(perPage: Int, page: Int, _ completion: @escaping ((GitHubServiceMock.ReposResult) -> Void)) {
+    public func getRepos(perPage: Int, page: Int, _ completion: @escaping ((GitHubServiceMock.ReposResult) -> Void)) {
         let mockOwner = Owner(login: "username",
                               id: 0,
                               avatarURL: "")
@@ -32,9 +33,10 @@ final class GitHubServiceMock: GitHubServiceProtocol {
 
         completion(.success(mockRepos))
     }
-    func getImageData(of repo: Repo, _ completion: @escaping ((GitHubServiceMock.DataResult) -> Void)) {
-        let mockData = Data()
-        completion(.success(mockData))
-        
+    public func getImageData(of repo: Repo, _ completion: @escaping ((GitHubServiceMock.DataResult) -> Void)) {
+        let mockImage: UIImage = UIImage.placeholder
+        if let mockData = mockImage.pngData() {
+            completion(.success(mockData))
+        }
     }
 }
