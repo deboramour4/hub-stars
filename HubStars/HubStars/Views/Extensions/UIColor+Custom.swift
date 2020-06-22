@@ -8,8 +8,9 @@
 
 import UIKit
 
+// MARK: - Extension UIColor
 extension UIColor {
     static func primary(alpha: Double) -> UIColor {
-        UIColor(red: 252/255.0, green: 228/255.0, blue: 92/255.0, alpha: CGFloat(alpha))
+        UIColor(red: 255/255.0, green: 211/255.0, blue: 33/255.0, alpha: CGFloat(alpha))
     }
 }

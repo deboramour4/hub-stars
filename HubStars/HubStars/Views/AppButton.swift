@@ -40,7 +40,7 @@ class AppButton: UIButton {
         layer.cornerRadius = Constants.height/2
         titleLabel?.font = UIFont.button
         
-        backgroundColor = UIColor.primary(alpha: 0.9)
+        backgroundColor = UIColor.primary(alpha: 0.8)
 
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: Constants.height)

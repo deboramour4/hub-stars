@@ -8,6 +8,7 @@
 
 import UIKit
 
+// MARK: - Extension UIImage
 extension UIImage {
     static let placeholder: UIImage = #imageLiteral(resourceName: "placeholder")
 }
