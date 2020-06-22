@@ -25,11 +25,11 @@ enum Endpoint: EndpointProtocol {
     case repos(perPage: Int, page: Int)
     case image(url: String)
     
-    // MARK: - URL
+    // MARK: - Computed properties
     var url: String {
         switch self {
         case .repos:
-            let baseUrl = K.APIServer.baseURL
+            let baseUrl = AppConstants.APIServer.baseURL
             let fullURL = baseUrl.appending(path)
             return fullURL
         case .image(let url):
@@ -37,7 +37,6 @@ enum Endpoint: EndpointProtocol {
         }
     }
     
-    // MARK: - HTTPMethod
     var method: HTTPInfo.Method {
         switch self {
         case .repos, .image:
@@ -45,7 +44,6 @@ enum Endpoint: EndpointProtocol {
         }
     }
     
-    // MARK: - HTTPHeaders
     var headers: [HTTPInfo.Header] {
         switch self {
         case .repos, .image:
@@ -53,7 +51,6 @@ enum Endpoint: EndpointProtocol {
         }
     }
     
-    // MARK: - Path
     var path: String {
         switch self {
         case .repos:
@@ -63,20 +60,18 @@ enum Endpoint: EndpointProtocol {
         }
     }
     
-    // MARK: - Parameters
     var parameters: HTTPInfo.Parameters {
         switch self {
         case .repos(let perPage, let page):
-            return [K.APIServer.ParameterKey.query: "language:swift",
-                    K.APIServer.ParameterKey.sort: "stars",
-                    K.APIServer.ParameterKey.page: page,
-                    K.APIServer.ParameterKey.perPage: perPage]
+            return [AppConstants.APIServer.ParameterKey.query: "language:swift",
+                    AppConstants.APIServer.ParameterKey.sort: "stars",
+                    AppConstants.APIServer.ParameterKey.page: page,
+                    AppConstants.APIServer.ParameterKey.perPage: perPage]
         case .image:
             return [:]
         }
     }
     
-    // MARK: - URLRequest
     var asRequest: URLRequest? {
         guard var urlComponents = URLComponents(string: url) else {
             return nil

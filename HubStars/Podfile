@@ -6,6 +6,7 @@ target 'HubStars' do
   use_frameworks!
 
   # Pods for HubStars
+  pod 'SwiftLint'
 
   target 'HubStarsTests' do
     inherit! :search_paths

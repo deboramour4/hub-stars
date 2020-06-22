@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: - Extension Int
 extension Int {
     var thousandFormat: String {
         let formatter = NumberFormatter()
@@ -15,7 +16,7 @@ extension Int {
         formatter.maximumFractionDigits = 1
         formatter.numberStyle = .decimal
         formatter.decimalSeparator = .point
-        formatter.positiveSuffix = K.thousandIndicator
+        formatter.positiveSuffix = AppConstants.thousandIndicator
     
         let number = Double(self)
         let thousand = number / 1000

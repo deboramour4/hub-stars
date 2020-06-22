@@ -16,7 +16,7 @@ final class AppCoordinator: Coordinator {
     private let rootViewController: UINavigationController
     private let repositoriesCoordinator: RepositoriesCoordinator
 
-    // MARK: - Constructors
+    // MARK: - Initializers
     init(window: UIWindow) {
         self.window = window
         rootViewController = UINavigationController()

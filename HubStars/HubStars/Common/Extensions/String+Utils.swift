@@ -8,6 +8,7 @@
 
 import Foundation
 
+// MARK: - Extension String
 extension String {
     static var empty: String { "" }
     static var space: String { " " }

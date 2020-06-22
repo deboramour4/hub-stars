@@ -10,7 +10,7 @@ import Foundation
 @testable import HubStars
 
 final class APIRequesterMock: APIRequesterProtocol {
-    func getJSON<T>(endpoint: Endpoint, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void)) where T : Decodable { }
+    func getJSON<T>(endpoint: Endpoint, completion: @escaping ((Result<T, APIRequester.RequestError>) -> Void)) where T: Decodable { }
     
     func getData(endpoint: Endpoint, completion: @escaping ((Result<Data, APIRequester.RequestError>) -> Void)) { }
 }

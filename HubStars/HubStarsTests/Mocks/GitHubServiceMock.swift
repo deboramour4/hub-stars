@@ -26,9 +26,9 @@ final class GitHubServiceMock: GitHubServiceProtocol {
                             htmlURL: "",
                             stars: 12345)
 
-        let mockRepos = Repos(totalCount: 10,
-                              incompleteResults: false,
-                              all: [mockRepo1, mockRepo2])
+        let mockRepos = Repositories(totalCount: 10,
+                                     incompleteResults: false,
+                                     all: [mockRepo1, mockRepo2])
 
         completion(.success(mockRepos))
     }

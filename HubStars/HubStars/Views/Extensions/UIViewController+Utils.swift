@@ -8,8 +8,13 @@
 
 import UIKit
 
+// MARK: - Extension UIViewController
 extension UIViewController {
-    func presentAlert(_ title: String?, message: String?, actionTitle: String?, dismissTitle: String? = nil, handler: ((UIAlertAction) -> Void)? = nil) {
+    func presentAlert(_ title: String?,
+                      message: String?,
+                      actionTitle: String?,
+                      dismissTitle: String? = nil,
+                      handler: ((UIAlertAction) -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: actionTitle, style: .default, handler: handler))
         if let title = dismissTitle {

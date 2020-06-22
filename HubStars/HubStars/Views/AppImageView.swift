@@ -29,6 +29,7 @@ class AppImageView: UIImageView {
         self.init(frame: .zero)
         self.isCircle = isCircle
     }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -51,7 +52,7 @@ class AppImageView: UIImageView {
         }
     }
     
-    // MARK: - Internal Functions
+    // MARK: - Private Functions
     private func customizeLoading() {
         backgroundColor = .quaternarySystemFill
     }
@@ -59,5 +60,4 @@ class AppImageView: UIImageView {
     private func customizeNormal() {
         backgroundColor = .clear
     }
-    
 }

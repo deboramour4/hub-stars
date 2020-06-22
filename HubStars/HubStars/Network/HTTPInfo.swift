@@ -9,7 +9,6 @@
 import Foundation
 
 // MARK: - HTTPInfo
-
 public struct HTTPInfo {
     typealias Parameters = [String: Any]
     
@@ -24,7 +23,7 @@ public struct HTTPInfo {
     enum Header {
         case contentType
         
-        var value: [String : String] {
+        var value: [String: String] {
             switch self {
             case .contentType:
                 return ["Content-type": "application/json"]

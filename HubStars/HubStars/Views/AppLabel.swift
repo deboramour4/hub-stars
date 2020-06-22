@@ -15,7 +15,7 @@ class AppLabel: UILabel {
     private struct Constants {
         static let cornerRadius: CGFloat = 8
     }
-    
+
     // MARK: - Properties
     override var text: String? {
         didSet {
@@ -24,6 +24,7 @@ class AppLabel: UILabel {
             }
         }
     }
+
     var isLoading: Bool = true {
         didSet {
             if isLoading {
@@ -37,24 +38,24 @@ class AppLabel: UILabel {
         super.init(frame: frame)
         initialize()
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
     }
-    
+
     private func initialize() {
         customizeLoading()
     }
     
-    // MARK: - Internal Functions
+    // MARK: - Private Functions
     private func customizeLoading() {
         backgroundColor = .quaternarySystemFill
         layer.masksToBounds = true
         layer.cornerRadius = Constants.cornerRadius
         text = String.space
     }
-    
+
     private func customizeNormal() {
         isLoading = false
         backgroundColor = .clear

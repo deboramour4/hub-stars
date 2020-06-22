@@ -51,11 +51,12 @@ class AppButton: UIButton {
         super.init(frame: frame)
         initialize()
     }
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
     }
-    
+
     private func initialize() {
         setTitleColor(UIColor.label, for: .normal)
         layer.masksToBounds = true
@@ -65,4 +66,3 @@ class AppButton: UIButton {
         heightAnchor.constraint(equalToConstant: Constants.height).isActive = true
     }
 }
-

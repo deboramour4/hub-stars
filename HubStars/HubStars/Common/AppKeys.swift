@@ -8,7 +8,10 @@
 
 import Foundation
 
+// MARK: - AppKeys
 struct AppKeys {
+    
+    // MARK: - General
     enum General: String, LocalizableKeys {
         case tryAgain
         case cancel
@@ -17,7 +20,8 @@ struct AppKeys {
             String(describing: General.self)
         }
     }
-
+    
+    // MARK: - ErrorNetwork
     enum ErrorNetwork: String, LocalizableKeys {
         case title
         case message
@@ -26,6 +30,8 @@ struct AppKeys {
             String(describing: ErrorNetwork.self)
         }
     }
+    
+    // MARK: - Repositories
     enum Repositories: String, LocalizableKeys {
         case title
         case topButton

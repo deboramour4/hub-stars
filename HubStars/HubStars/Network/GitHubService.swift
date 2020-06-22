@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - GitHubServiceProtocol
 protocol GitHubServiceProtocol {
-    typealias ReposResult = (Result<Repos, APIRequester.RequestError>)
+    typealias ReposResult = (Result<Repositories, APIRequester.RequestError>)
     typealias DataResult = (Result<Data, APIRequester.RequestError>)
     
     func getRepos(perPage: Int, page: Int, _ completion: @escaping ((ReposResult) -> Void))
@@ -18,13 +18,12 @@ protocol GitHubServiceProtocol {
 }
 
 // MARK: - GitHubService
-final class GitHubService : GitHubServiceProtocol {
+final class GitHubService: GitHubServiceProtocol {
     
     // MARK: - Properties
     private var requester: APIRequesterProtocol
     
-    // MARK: - Constructors
-    
+    // MARK: - Initializers
     init(_ requester: APIRequesterProtocol = APIRequester()) {
         self.requester = requester
     }

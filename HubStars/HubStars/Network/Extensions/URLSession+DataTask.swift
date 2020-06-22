@@ -8,9 +8,8 @@
 
 import Foundation
 
+// MARK: - Extension URLSession
 extension URLSession {
-    
-    // MARK: - Custom dataTask
     func dataTask(
         with url: URLRequest,
         result: @escaping (Result<(HTTPURLResponse, Data), Error>) -> Void) -> URLSessionDataTask {
